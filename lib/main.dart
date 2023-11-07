@@ -1,6 +1,5 @@
 import 'package:easy_parking_app/app/core/services/injection_container.dart';
 import 'package:easy_parking_app/app/core/src/data/presentation/bloc/vacancy/vacancy_cubit.dart';
-import 'package:easy_parking_app/app/core/src/data/presentation/pages/history_page.dart';
 import 'package:easy_parking_app/app/core/src/data/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +21,6 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(title: 'Estacionamento', routes: {
         '/': (context) => const HomePage(),
-        '/history': (context) => const HistoryPage(),
       }),
     );
   }

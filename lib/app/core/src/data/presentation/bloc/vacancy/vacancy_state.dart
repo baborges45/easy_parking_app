@@ -25,15 +25,15 @@ class ParkingLotStateLoaded extends ParkingLotState {
     this.vacancy, {
     List<HistoryEntity>? history,
     List<HistoryEntity>? exitHistory,
-  })  : _history = history ?? const [],
+  })  : _addHistory = history ?? const [],
         _exitHistory = exitHistory ?? const [];
 
   @override
   final VacancyEntity vacancy;
-  final List<HistoryEntity> _history;
+  final List<HistoryEntity> _addHistory;
   final List<HistoryEntity> _exitHistory;
 
-  List<HistoryEntity> get history => _history;
+  List<HistoryEntity> get addHistory => _addHistory;
   List<HistoryEntity> get exitHistory => _exitHistory;
 }
 

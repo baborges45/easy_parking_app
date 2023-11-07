@@ -1,5 +1,5 @@
 import 'package:another_dashed_container/another_dashed_container.dart';
-import 'package:easy_parking_app/app/core/src/data/models/vacancy_model.dart';
+import 'package:easy_parking_app/app/core/src/data/domain/entities/vacancy.dart';
 import 'package:easy_parking_app/app/core/src/data/presentation/pages/booking_page.dart';
 import 'package:easy_parking_app/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -10,13 +10,13 @@ class ParkingSlot extends StatelessWidget {
     required this.vacancy,
     this.onPressed,
   });
-  final VacancyModel vacancy;
+  final VacancyEntity vacancy;
   final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     return DashedContainer(
-      dashColor: Colors.blue.shade300,
+      dashColor: AppColors.highlight,
       dashedLength: 10.0,
       blankLength: 9.0,
       strokeWidth: 1.0,
@@ -91,8 +91,6 @@ class ParkingSlot extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (context) => BookingPage(
                             vacancy: vacancy,
-                            // slotId: vacancy.id ?? 0,
-                            // slotName: vacancy.slotName.toString(),
                           ),
                         ),
                       );
@@ -101,11 +99,11 @@ class ParkingSlot extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 7, horizontal: 30),
                       decoration: BoxDecoration(
-                        color: AppColors.blueberry,
+                        color: AppColors.highlight,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Text(
-                        "BOOK",
+                        "SLOT",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15,

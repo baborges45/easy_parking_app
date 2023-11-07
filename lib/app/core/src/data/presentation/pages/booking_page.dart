@@ -9,7 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BookingPage extends StatefulWidget {
-  const BookingPage({super.key, required this.vacancy});
+  const BookingPage({
+    super.key,
+    required this.vacancy,
+  });
   final VacancyEntity vacancy;
 
   @override
@@ -51,7 +54,7 @@ class _BookingPageState extends State<BookingPage> {
                   child: Text(
                     widget.vacancy.slotName ?? '',
                     style: const TextStyle(
-                      fontSize: 30,
+                      fontSize: 25,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
@@ -86,63 +89,36 @@ class _BookingPageState extends State<BookingPage> {
                   _carModel = value!;
                 },
               ),
-
-              // ElevatedButton(
-              //   onPressed: () {
-              //     if (_formKey.currentState!.validate()) {
-              //       _formKey.currentState!.save();
-              //       context.read<ParkingLotCubit>().add(
-              //             VacancyOccupied(
-              //               VacancyEntity(
-              //                 id: widget.vacancy.id,
-              //                 slotName: widget.vacancy.slotName,
-              //                 occupied: widget.vacancy.occupied,
-              //                 car: CarModel(
-              //                   plate: _carPlate,
-              //                   model: _carModel,
-              //                 ),
-              //               ),
-              //             ),
-              //           );
-              //       Navigator.pop(context);
-              //     }
-              //   },
-              //   child: const Text('Reservar'),
-              // ),
+              const SizedBox(height: 20),
               BlocBuilder<ParkingLotCubit, ParkingLotState>(
                 builder: (context, state) {
                   return ParkingLot(
-                    isFavorited: state.vacancy!.occupied ?? false,
+                    isParked: state.vacancy!.occupied ?? false,
                     size: 50,
                     padding: 20,
                     onTap: () {
-                      BlocProvider.of<ParkingLotCubit>(context).add(
-                        VacancyOccupied(
-                          state.vacancy ??
-                              VacancyEntity(
-                                id: 0,
-                                slotName: '',
-                                occupied: null,
-                              ),
-                        ),
-                      );
-
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        context.read<ParkingLotCubit>().add(
-                              VacancyOccupied(
-                                VacancyEntity(
-                                  id: widget.vacancy.id,
-                                  slotName: widget.vacancy.slotName,
-                                  occupied: widget.vacancy.occupied,
-                                  car: CarModel(
-                                    plate: _carPlate,
-                                    model: _carModel,
+                      if (state.vacancy!.occupied ?? false) {
+                        BlocProvider.of<ParkingLotCubit>(context).add(
+                          VacancyUnoccupied(state.vacancy!),
+                        );
+                      } else {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          context.read<ParkingLotCubit>().add(
+                                VacancyOccupied(
+                                  VacancyEntity(
+                                    id: widget.vacancy.id,
+                                    slotName: widget.vacancy.slotName,
+                                    occupied: widget.vacancy.occupied,
+                                    car: CarModel(
+                                      plate: _carPlate,
+                                      model: _carModel,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                        Navigator.pop(context);
+                              );
+                          Navigator.pop(context);
+                        }
                       }
                     },
                   );

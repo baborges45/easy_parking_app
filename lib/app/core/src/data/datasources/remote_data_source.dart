@@ -11,7 +11,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
 
   @override
   Future<List<VacancyModel>> getRecommendCourses() async {
-    //==== Todo: implement the call to real api =====
+    // Todo: implement the call to real api
     try {
       // dummy data
       return vagas.map((e) => VacancyModel.fromMap(e)).toList();

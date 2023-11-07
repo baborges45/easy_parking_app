@@ -6,15 +6,14 @@ import 'package:easy_parking_app/app/core/src/data/presentation/bloc/vacancy/vac
 import 'package:easy_parking_app/app/core/src/data/presentation/bloc/vacancy/vacancy_event.dart';
 import 'package:easy_parking_app/app/core/src/data/presentation/bloc/vacancy/vacancy_state.dart';
 import 'package:easy_parking_app/app/core/src/data/presentation/components/parking_slot.dart';
+import 'package:easy_parking_app/app/core/src/data/presentation/pages/history_page.dart';
 import 'package:easy_parking_app/app/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({
-    super.key,
-  });
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -39,93 +38,100 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ParkingLotCubit(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Parking App'),
-        ),
-        body: BlocBuilder<ParkingLotCubit, ParkingLotState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const Text(
-                    "Estacionamento",
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Histórico",
-                            style: TextStyle(
-                              fontSize: 15,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/history');
-                            },
-                            icon: const Icon(Icons.list_alt_outlined),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      itemCount: parkingSpots.length,
-                      itemBuilder: (context, index) {
-                        final spot = parkingSpots[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                children: [
-                                  ParkingSlot(
-                                    vacancy: spot.vacancy,
-                                    onPressed: () {
-                                      BlocProvider.of<ParkingLotCubit>(context)
-                                          .add(
-                                        VacancyUnoccupied(spot.vacancy),
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(
-                                    width: 60,
-                                    height: 60,
-                                    child: VerticalDivider(
-                                      color: AppColors.blueberry,
-                                      thickness: 1,
-                                    ),
-                                  ),
-                                  ParkingSlot(
-                                    vacancy: spot.vacancy,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Estacionamento"), // Título da AppBar
+      ),
+      body: BlocConsumer<ParkingLotCubit, ParkingLotState>(
+        listener: (context, state) {
+          if (state.vacancy != null) {
+            final index = parkingSpots
+                .indexWhere((spot) => spot.vacancy.id == state.vacancy!.id);
+            parkingSpots[index] = ParkingSlot(
+              vacancy: state.vacancy!,
             );
-          },
-        ),
+          }
+        },
+        builder: (context, state) {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          "Histórico",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HistoryPage(
+                                  vacancy: state.vacancy!,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.list_alt_outlined),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: ListView.builder(
+                    itemCount: parkingSpots.length,
+                    itemBuilder: (context, index) {
+                      final spot = parkingSpots[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                ParkingSlot(
+                                  vacancy: spot.vacancy,
+                                  onPressed: () {
+                                    BlocProvider.of<ParkingLotCubit>(context)
+                                        .add(
+                                      VacancyUnoccupied(spot.vacancy),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(
+                                  width: 60,
+                                  height: 60,
+                                  child: VerticalDivider(
+                                    color: AppColors.blueberry,
+                                    thickness: 1,
+                                  ),
+                                ),
+                                ParkingSlot(
+                                  vacancy: spot.vacancy,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
